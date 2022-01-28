@@ -1,6 +1,9 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 
-from .models import Comment, Post, Group
+from .models import Comment, Follow, Group, Post
+
+User = get_user_model()
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -23,6 +26,12 @@ class CommentAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
+class FollowAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'user', 'following')
+    empty_value_display = '-пусто-'
+
+
 admin.site.register(Post, PostAdmin)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Comment, CommentAdmin)
+admin.site.register(Follow, FollowAdmin)

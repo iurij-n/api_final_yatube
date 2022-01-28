@@ -3,6 +3,7 @@ from django.db import models
 
 User = get_user_model()
 
+
 class Post(models.Model):
     """Модель отдельной публикации"""
     text = models.TextField('Текст публикации',
@@ -33,7 +34,6 @@ class Post(models.Model):
     )
 
     class Meta:
-        ordering = ('-pub_date',)
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
 
@@ -42,20 +42,56 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    """Модель комментария к публикации"""
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='comments')
+        User, on_delete=models.CASCADE, related_name='comments'
+    )
     post = models.ForeignKey(
-        Post, on_delete=models.CASCADE, related_name='comments')
+        Post, on_delete=models.CASCADE, related_name='comments'
+    )
     text = models.TextField()
     created = models.DateTimeField(
-        'Дата добавления', auto_now_add=True, db_index=True)
+        'Дата добавления', auto_now_add=True, db_index=True
+    )
+
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+
+    def __str__(self) -> str:
+        return self.text[:30]
+
 
 class Group(models.Model):
     """Модель сообщества"""
     title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(max_length=50, unique=True)
     description = models.TextField()
 
+    class Meta:
+        verbose_name = 'Группа'
+        verbose_name_plural = 'Группы'
+
     def __str__(self):
-        return self.title
+        return self.title[:30]
+
+
+class Follow(models.Model):
+    """Модель системы подписок авторов"""
+    user = models.ForeignKey(
+        User,
+        verbose_name='Подписчик',
+        on_delete=models.CASCADE,
+        related_name='follower',
+        help_text='Имя подписчика'
+    )
+    following = models.ForeignKey(
+        User,
+        verbose_name='Автор записей',
+        on_delete=models.CASCADE,
+        related_name='following',
+        help_text='Имя автора публикаций'
+    )
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
