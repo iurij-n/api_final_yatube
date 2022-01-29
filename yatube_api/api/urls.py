@@ -16,6 +16,5 @@ router_v1.register(r'v1/follow', FollowViewSet, basename='follow')
 
 urlpatterns = [
     path('', include(router_v1.urls)),
-    path('v1/', include('djoser.urls')),
     path('v1/', include('djoser.urls.jwt')),
 ]
